@@ -1,22 +1,25 @@
 from rest_framework import viewsets
 
 from train_station.models import (
-    TrainType,
-    Train,
-    Ticket,
-    Order,
-    Station,
     Journey,
+    Order,
     Route,
+    Station,
+    Ticket,
+    Train,
+    TrainType,
 )
 from train_station.serializers import (
-    TrainTypeSerializer,
-    TrainSerializer,
-    TicketSerializer,
+    JourneySerializer,
     OrderSerializer,
-    StationSerializer,
+    RouteListSerializer,
     RouteSerializer,
-    JourneySerializer, TrainListSerializer, TrainRetrieveSerializer, RouteListSerializer,
+    StationSerializer,
+    TicketSerializer,
+    TrainListSerializer,
+    TrainRetrieveSerializer,
+    TrainSerializer,
+    TrainTypeSerializer,
 )
 
 
@@ -30,11 +33,12 @@ class TrainModelView(viewsets.ModelViewSet):
     serializer_class = TrainSerializer
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == "list":
             return TrainListSerializer
-        elif self.action == 'retrieve':
+        elif self.action == "retrieve":
             return TrainRetrieveSerializer
-        else: return TrainSerializer
+        else:
+            return TrainSerializer
 
 
 class TicketModelView(viewsets.ModelViewSet):
@@ -42,12 +46,10 @@ class TicketModelView(viewsets.ModelViewSet):
     serializer_class = TicketSerializer
 
     def get_serializer_class(self):
-        if self.action == 'create':
+        if self.action == "create":
             return TicketSerializer
-        elif self.action == 'list':
-            return TicketListSerializer
-        else: return TicketSerializer
-
+        else:
+            return TicketSerializer
 
 
 class OrderModelView(viewsets.ModelViewSet):
@@ -55,7 +57,7 @@ class OrderModelView(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
 
     def get_serializer_class(self):
-        if self.action == 'create':
+        if self.action == "create":
             return OrderSerializer
         else:
             return OrderSerializer
@@ -74,7 +76,7 @@ class RouteModelView(viewsets.ModelViewSet):
     serializer_class = RouteSerializer
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == "list":
             return RouteListSerializer
         return RouteSerializer
 

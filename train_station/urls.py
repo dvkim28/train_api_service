@@ -1,8 +1,14 @@
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework import routers
 
-from train_station.views import TrainTypeModelView, TrainModelView, StationModelView, RouteModelView, OrderModelView, \
-    TicketModelView
+from train_station.views import (
+    OrderModelView,
+    RouteModelView,
+    StationModelView,
+    TicketModelView,
+    TrainModelView,
+    TrainTypeModelView,
+)
 
 router = routers.DefaultRouter()
 router.register("train_type", TrainTypeModelView)
