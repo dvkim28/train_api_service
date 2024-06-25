@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import IntegerField, ForeignKey
+from django.db.models import ForeignKey, IntegerField
 
 
 class Train(models.Model):
@@ -36,13 +36,16 @@ class Station(models.Model):
 
 
 class Route(models.Model):
-    source = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="routes_from")
-    destination = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="routes_to")
+    source = models.ForeignKey(
+        Station, on_delete=models.CASCADE, related_name="routes_from"
+    )
+    destination = models.ForeignKey(
+        Station, on_delete=models.CASCADE, related_name="routes_to"
+    )
     distance = models.IntegerField()
 
     def __str__(self):
         return f"{self.source} to {self.destination}"
-
 
 
 class Journey(models.Model):
