@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import ForeignKey, IntegerField
+from django.db.models import ForeignKey
 
 
 class Train(models.Model):
@@ -24,8 +23,12 @@ class TrainType(models.Model):
 class Ticket(models.Model):
     cargo = models.IntegerField()
     seat = models.IntegerField()
-    journey = ForeignKey("Journey", on_delete=models.CASCADE, related_name="tickets")
-    order = ForeignKey("Order", on_delete=models.CASCADE, related_name="tickets")
+    journey = ForeignKey("Journey",
+                         on_delete=models.CASCADE,
+                         related_name="tickets")
+    order = ForeignKey("Order",
+                       on_delete=models.CASCADE,
+                       related_name="tickets")
 
     def __str__(self):
         return f"Ticket: {self.order} - {self.cargo} - {self.seat}"
@@ -62,13 +65,14 @@ class Route(models.Model):
     def __str__(self):
         return f" Train {self.id}:{self.source.name} - {self.destination.name}"
 
-    def __str__(self):
-        return f"{self.source} to {self.destination}"
-
 
 class Journey(models.Model):
-    route = models.ForeignKey(Route, on_delete=models.CASCADE, related_name="journeys")
-    train = models.ForeignKey(Train, on_delete=models.CASCADE, related_name="journeys")
+    route = models.ForeignKey(Route,
+                              on_delete=models.CASCADE,
+                              related_name="journeys")
+    train = models.ForeignKey(Train,
+                              on_delete=models.CASCADE,
+                              related_name="journeys")
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
 

@@ -1,12 +1,23 @@
-from django.shortcuts import render
-from django.views.generic import ListView
-from pip._vendor.rich.status import Status
 from rest_framework import viewsets
-from rest_framework.routers import Route
 
-from train_station.models import TrainType, Train, Ticket, Order, Station, Journey
-from train_station.serializers import TrainTypeSerializer, TrainSerializer, TicketSerializer, OrderSerializer, \
-    StationSerializer, RouteSerializer, JourneySerializer
+from train_station.models import (
+    TrainType,
+    Train,
+    Ticket,
+    Order,
+    Station,
+    Journey,
+    Route,
+)
+from train_station.serializers import (
+    TrainTypeSerializer,
+    TrainSerializer,
+    TicketSerializer,
+    OrderSerializer,
+    StationSerializer,
+    RouteSerializer,
+    JourneySerializer,
+)
 
 
 class TrainTypeModelView(viewsets.ModelViewSet):
