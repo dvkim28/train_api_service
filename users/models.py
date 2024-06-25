@@ -39,6 +39,7 @@ class UserManager(BaseUserManager):
 
 class Crew(AbstractUser):
     email = models.EmailField(_("email address"), unique=True)
+    username = models.CharField(_("username"), max_length=150, unique=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
