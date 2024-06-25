@@ -10,9 +10,15 @@ class Train(models.Model):
     places_in_cargo = models.IntegerField()
     train_type = ForeignKey("TrainType", on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
 
 class TrainType(models.Model):
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 
 class Ticket(models.Model):
@@ -21,6 +27,9 @@ class Ticket(models.Model):
     journey = ForeignKey("Journey", on_delete=models.CASCADE, related_name="tickets")
     order = ForeignKey("Order", on_delete=models.CASCADE, related_name="tickets")
 
+    def __str__(self):
+        return f"Ticket: {self.order} - {self.cargo} - {self.seat}"
+
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -28,11 +37,17 @@ class Order(models.Model):
         get_user_model(), on_delete=models.CASCADE, related_name="orders"
     )
 
+    def __str__(self):
+        return f"{self.user.username} - {self.created_at}"
+
 
 class Station(models.Model):
     name = models.CharField(max_length=255)
     latitude = models.FloatField()
     longitude = models.FloatField()
+
+    def __str__(self):
+        return self.name
 
 
 class Route(models.Model):
@@ -45,6 +60,9 @@ class Route(models.Model):
     distance = models.IntegerField()
 
     def __str__(self):
+        return f" Train {self.id}:{self.source.name} - {self.destination.name}"
+
+    def __str__(self):
         return f"{self.source} to {self.destination}"
 
 
@@ -53,3 +71,6 @@ class Journey(models.Model):
     train = models.ForeignKey(Train, on_delete=models.CASCADE, related_name="journeys")
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.train}"
