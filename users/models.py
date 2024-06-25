@@ -37,7 +37,7 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-class Crew(AbstractUser):
+class User(AbstractUser):
     email = models.EmailField(_("email address"), unique=True)
     username = models.CharField(_("username"), max_length=150, unique=True)
 
@@ -45,3 +45,15 @@ class Crew(AbstractUser):
     REQUIRED_FIELDS = []
 
     objects = UserManager()
+
+
+class Crew(models.Model):
+    first_name = models.CharField(_("first name"), max_length=150)
+    last_name = models.CharField(_("last name"), max_length=150)
+    position = models.CharField(_("position"), max_length=150, blank=True)
+
+    def __str__(self):
+        return self.first_name
+
+
+
