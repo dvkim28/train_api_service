@@ -1,3 +1,4 @@
+from django.db.models import Count, F, Sum
 from rest_framework import viewsets
 
 from train_station.models import (
@@ -81,6 +82,19 @@ class RouteModelView(viewsets.ModelViewSet):
         return RouteSerializer
 
 
+
 class JourneyModelView(viewsets.ModelViewSet):
     queryset = Journey.objects.all()
     serializer_class = JourneySerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+        if self.action == "list":
+            queryset = (
+                queryset
+                .annotate(
+                    holded=Count("tickets"),
+                    tickets_available=F("train__places_in_cargo") - F("holded"),
+                )
+            )
+            return queryset

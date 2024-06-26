@@ -33,6 +33,9 @@ class Ticket(models.Model):
     def __str__(self):
         return f"Ticket: {self.order} - {self.cargo} - {self.seat}"
 
+    class Meta:
+        unique_together = ("cargo", "seat", "journey")
+
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -79,3 +82,7 @@ class Journey(models.Model):
 
     def __str__(self):
         return f"{self.train}"
+
+    @property
+    def get_booked_seats(self):
+        return self.tickets.values_list("seat", flat=True).distinct().count()

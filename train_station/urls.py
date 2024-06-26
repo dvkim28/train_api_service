@@ -7,7 +7,7 @@ from train_station.views import (
     StationModelView,
     TicketModelView,
     TrainModelView,
-    TrainTypeModelView,
+    TrainTypeModelView, JourneyModelView,
 )
 
 router = routers.DefaultRouter()
@@ -17,6 +17,7 @@ router.register("station", StationModelView)
 router.register("route", RouteModelView)
 router.register("ticket", TicketModelView)
 router.register("order", OrderModelView)
+router.register("journey", JourneyModelView)
 
 urlpatterns = [
     path("", include(router.urls)),
