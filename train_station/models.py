@@ -86,3 +86,17 @@ class Journey(models.Model):
     @property
     def get_booked_seats(self):
         return self.tickets.values_list("seat", flat=True).distinct().count()
+
+
+class Crew(models.Model):
+    first_name = models.CharField( max_length=150)
+    last_name = models.CharField( max_length=150)
+    position = models.CharField(max_length=150, blank=True)
+    journey = models.ManyToManyField(Journey, blank=True, related_name="crews")
+
+    @property
+    def get_full_name_with_position(self):
+        return f"{self.first_name} {self.last_name} - {self.position}"
+
+    def __str__(self):
+        return self.first_name

@@ -7,7 +7,7 @@ from train_station.models import (
     Station,
     Ticket,
     Train,
-    TrainType,
+    TrainType, Crew,
 )
 
 admin.site.register(Station)
@@ -17,3 +17,4 @@ admin.site.register(Route)
 admin.site.register(Journey)
 admin.site.register(Order)
 admin.site.register(Ticket)
+admin.site.register(Crew)
