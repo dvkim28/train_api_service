@@ -1,4 +1,4 @@
-from django.db.models import Count, F, Sum
+from django.db.models import Count, F
 from rest_framework import viewsets
 
 from train_station.models import (
@@ -20,7 +20,7 @@ from train_station.serializers import (
     TrainListSerializer,
     TrainRetrieveSerializer,
     TrainSerializer,
-    TrainTypeSerializer,
+    TrainTypeSerializer, JourneyListSerializer, JourneyRetrieveSerializer, OrderListSerializer,
 )
 
 
@@ -60,11 +60,14 @@ class OrderModelView(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "create":
             return OrderSerializer
-        else:
-            return OrderSerializer
+        elif self.action == "list":
+            return OrderListSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
 
 
 class StationModelView(viewsets.ModelViewSet):
@@ -82,10 +85,16 @@ class RouteModelView(viewsets.ModelViewSet):
         return RouteSerializer
 
 
-
 class JourneyModelView(viewsets.ModelViewSet):
     queryset = Journey.objects.all()
     serializer_class = JourneySerializer
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return JourneyListSerializer
+        elif self.action == "retrieve":
+            return JourneyListSerializer
+        return JourneySerializer
 
     def get_queryset(self):
         queryset = self.queryset
@@ -94,7 +103,7 @@ class JourneyModelView(viewsets.ModelViewSet):
                 queryset
                 .annotate(
                     holded=Count("tickets"),
-                    tickets_available=F("train__places_in_cargo") - F("holded"),
-                )
-            )
+                    tickets_available=F("train__places_in_cargo")
+                    - F("holded"),
+                ))
             return queryset

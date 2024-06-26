@@ -56,12 +56,14 @@ class TicketSerializer(serializers.ModelSerializer):
         fields = ["id", "cargo", "seat", "journey"]
 
 
+class TicketRetrieveSerializer(TicketSerializer):
+    class Meta:
+        model = Ticket
+        fields = ["id", "cargo", "seat"]
+
+
 class OrderSerializer(serializers.ModelSerializer):
-    tickets = TicketSerializer(
-        many=True,
-        read_only=False,
-        allow_empty=False)
-    user = serializers.ReadOnlyField(source="user.username")
+
 
     class Meta:
         model = Order
@@ -78,6 +80,19 @@ class OrderSerializer(serializers.ModelSerializer):
             for ticket in tickets:
                 Ticket.objects.create(order=order, **ticket)
             return order
+
+
+class OrderListSerializer(OrderSerializer):
+    tickets = TicketRetrieveSerializer(
+        many=True,
+        read_only=False,
+        allow_empty=False)
+    user = serializers.CharField(source="user.email",
+                                 read_only=True)
+
+    class Meta:
+        model = Order
+        fields = ["id", "user", "tickets"]
 
 
 class StationSerializer(serializers.ModelSerializer):
@@ -125,17 +140,36 @@ class RouteListSerializer(serializers.ModelSerializer):
 
 
 class JourneySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Journey
+        fields = "__all__"
+
+
+class JourneyListSerializer(JourneySerializer):
     route = RouteListSerializer(many=False, read_only=True)
     train = TrainListSerializer(
         many=False,
         read_only=True,
     )
     booked_seats = serializers.SerializerMethodField()
-    tickets_available =serializers.IntegerField(read_only=True)
+    tickets_available = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Journey
-        fields = ["id","departure_time","arrival_time","booked_seats","tickets_available", "route", "train",]
+        fields = ["id",
+                  "departure_time",
+                  "arrival_time",
+                  "booked_seats",
+                  "tickets_available",
+                  "route",
+                  "train",]
 
     def get_booked_seats(self, obj):
         return obj.get_booked_seats
+
+
+
+class JourneyRetrieveSerializer(JourneySerializer):
+    class Meta:
+        model = Journey
+        fields = "__all__"
