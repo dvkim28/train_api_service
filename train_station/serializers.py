@@ -99,6 +99,10 @@ class StationListSerializer(StationSerializer):
 
 
 class RouteSerializer(serializers.ModelSerializer):
+    source = serializers.CharField(
+        source="source.name", read_only=True)
+    destination = serializers.CharField(
+        source="destination.name", read_only=True)
 
     class Meta:
         model = Route
