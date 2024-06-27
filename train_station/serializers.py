@@ -20,7 +20,9 @@ class TrainTypeSerializer(serializers.ModelSerializer):
 
 
 class TrainSerializer(serializers.ModelSerializer):
-    train_type = serializers.CharField(source="train_type.name", read_only=True)
+    train_type = serializers.CharField(
+        source="train_type.name",
+        read_only=True)
 
     class Meta:
         model = Train
@@ -28,7 +30,9 @@ class TrainSerializer(serializers.ModelSerializer):
 
 
 class TrainRetrieveSerializer(TrainSerializer):
-    train_type = serializers.CharField(source="train_type.name", read_only=True)
+    train_type = serializers.CharField(
+        source="train_type.name",
+        read_only=True)
 
     class Meta:
         model = Train
@@ -44,7 +48,7 @@ class TrainListSerializer(TrainSerializer):
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
-        fields = ["id", "cargo", "seat", "journey"]
+        fields = ["id", "cargo", "seat", "journey", "order"]
 
 
 class TicketRetrieveSerializer(TicketSerializer):
@@ -73,8 +77,13 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class OrderListSerializer(OrderSerializer):
-    tickets = TicketRetrieveSerializer(many=True, read_only=False, allow_empty=False)
-    user = serializers.CharField(source="user.email", read_only=True)
+    tickets = TicketRetrieveSerializer(
+        many=True,
+        read_only=False,
+        allow_empty=False)
+    user = serializers.CharField(
+        source="user.email",
+        read_only=True)
 
     class Meta:
         model = Order
@@ -100,27 +109,20 @@ class StationListSerializer(StationSerializer):
 
 
 class RouteSerializer(serializers.ModelSerializer):
-    source = serializers.CharField(source="source.name", read_only=True)
-    destination = serializers.CharField(source="destination.name", read_only=True)
-
     class Meta:
         model = Route
         fields = "__all__"
 
 
-class RouteListSerializer(serializers.ModelSerializer):
-    source = serializers.SlugRelatedField(
-        slug_field="name",
-        read_only=True,
-    )
-    destination = serializers.SlugRelatedField(
-        slug_field="name",
-        read_only=True,
-    )
+class RouteListSerializer(RouteSerializer):
+    source = serializers.CharField(
+        source="source.name", read_only=True)
+    destination = serializers.CharField(
+        source="destination.name", read_only=True)
 
     class Meta:
         model = Route
-        fields = ["id", "source", "destination"]
+        fields = "__all__"
 
 
 class JourneySerializer(serializers.ModelSerializer):
@@ -130,7 +132,8 @@ class JourneySerializer(serializers.ModelSerializer):
 
 
 class CrewSerializer(serializers.ModelSerializer):
-    crew_member = serializers.ReadOnlyField(source="get_full_name_with_position")
+    crew_member = serializers.ReadOnlyField(
+        source="get_full_name_with_position")
 
     class Meta:
         model = Crew
