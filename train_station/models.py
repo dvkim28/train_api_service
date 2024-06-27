@@ -68,7 +68,7 @@ class Order(models.Model):
     )
 
     def __str__(self):
-        return f"{self.user.username} - {self.created_at}"
+        return f"{self.user.email}"
 
 
 class Station(models.Model):
