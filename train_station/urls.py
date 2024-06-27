@@ -12,7 +12,7 @@ from train_station.views import (
 )
 
 router = routers.DefaultRouter()
-router.register("train_type", TrainTypeModelView)
+router.register("traintype", TrainTypeModelView)
 router.register("train", TrainModelView)
 router.register("station", StationModelView)
 router.register("route", RouteModelView)

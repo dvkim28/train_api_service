@@ -1,6 +1,7 @@
 from django.db.models import Count, F
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 from rest_framework.permissions import IsAuthenticated
+
 
 from train_station.models import (
     Journey,
@@ -45,7 +46,11 @@ class TrainModelView(viewsets.ModelViewSet):
             return TrainSerializer
 
 
-class TicketModelView(viewsets.ModelViewSet):
+class TicketModelView(viewsets.GenericViewSet,
+                      mixins.CreateModelMixin,
+                      mixins.RetrieveModelMixin,
+                      mixins.ListModelMixin,
+                      ):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
     permission_classes = (IsAuthenticated,)
@@ -55,6 +60,9 @@ class TicketModelView(viewsets.ModelViewSet):
             return TicketSerializer
         else:
             return TicketSerializer
+
+    def get_queryset(self):
+        return Ticket.objects.filter(order__user=self.request.user)
 
 
 class OrderModelView(viewsets.ModelViewSet):
@@ -69,9 +77,6 @@ class OrderModelView(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-    def get_queryset(self):
-        return Order.objects.filter(user=self.request.user)
 
 
 class StationModelView(viewsets.ModelViewSet):
