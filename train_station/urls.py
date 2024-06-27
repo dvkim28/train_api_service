@@ -23,3 +23,5 @@ router.register("journey", JourneyModelView)
 urlpatterns = [
     path("", include(router.urls)),
 ]
+
+app_name = "train_station"

@@ -62,7 +62,7 @@ class OrderModelView(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
 
     def get_serializer_class(self):
-        if self.action == "create":
+        if self.action in ("create"):
             return OrderSerializer
         elif self.action == "list":
             return OrderListSerializer
