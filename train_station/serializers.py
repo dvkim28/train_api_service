@@ -8,7 +8,8 @@ from train_station.models import (
     Station,
     Ticket,
     Train,
-    TrainType, Crew,
+    TrainType,
+    Crew,
 )
 
 
@@ -19,8 +20,7 @@ class TrainTypeSerializer(serializers.ModelSerializer):
 
 
 class TrainSerializer(serializers.ModelSerializer):
-    train_type = serializers.CharField(
-        source="train_type.name", read_only=True)
+    train_type = serializers.CharField(source="train_type.name", read_only=True)
 
     class Meta:
         model = Train
@@ -28,26 +28,17 @@ class TrainSerializer(serializers.ModelSerializer):
 
 
 class TrainRetrieveSerializer(TrainSerializer):
-    train_type = serializers.CharField(
-        source="train_type.name", read_only=True)
+    train_type = serializers.CharField(source="train_type.name", read_only=True)
 
     class Meta:
         model = Train
-        fields = ["id",
-                  "name",
-                  "cargo_num",
-                  "places_in_cargo",
-                  "train_type"]
+        fields = ["id", "name", "cargo_num", "places_in_cargo", "train_type"]
 
 
 class TrainListSerializer(TrainSerializer):
     class Meta:
         model = Train
-        fields = ["id",
-                  "name",
-                  "cargo_num",
-                  "places_in_cargo",
-                  "train_type"]
+        fields = ["id", "name", "cargo_num", "places_in_cargo", "train_type"]
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -63,7 +54,6 @@ class TicketRetrieveSerializer(TicketSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-
 
     class Meta:
         model = Order
@@ -83,12 +73,8 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class OrderListSerializer(OrderSerializer):
-    tickets = TicketRetrieveSerializer(
-        many=True,
-        read_only=False,
-        allow_empty=False)
-    user = serializers.CharField(source="user.email",
-                                 read_only=True)
+    tickets = TicketRetrieveSerializer(many=True, read_only=False, allow_empty=False)
+    user = serializers.CharField(source="user.email", read_only=True)
 
     class Meta:
         model = Order
@@ -114,10 +100,8 @@ class StationListSerializer(StationSerializer):
 
 
 class RouteSerializer(serializers.ModelSerializer):
-    source = serializers.CharField(
-        source="source.name", read_only=True)
-    destination = serializers.CharField(
-        source="destination.name", read_only=True)
+    source = serializers.CharField(source="source.name", read_only=True)
+    destination = serializers.CharField(source="destination.name", read_only=True)
 
     class Meta:
         model = Route
@@ -146,11 +130,11 @@ class JourneySerializer(serializers.ModelSerializer):
 
 
 class CrewSerializer(serializers.ModelSerializer):
-    crew_member = serializers.ReadOnlyField(source='get_full_name_with_position')
+    crew_member = serializers.ReadOnlyField(source="get_full_name_with_position")
 
     class Meta:
         model = Crew
-        fields = ['crew_member']
+        fields = ["crew_member"]
 
 
 class JourneyListSerializer(JourneySerializer):
@@ -165,24 +149,22 @@ class JourneyListSerializer(JourneySerializer):
 
     class Meta:
         model = Journey
-        fields = ["id",
-                  "departure_time",
-                  "arrival_time",
-                  "booked_seats",
-                  "tickets_available",
-                  "route",
-                  "train",
-                  "crews"
-                  ]
+        fields = [
+            "id",
+            "departure_time",
+            "arrival_time",
+            "booked_seats",
+            "tickets_available",
+            "route",
+            "train",
+            "crews",
+        ]
 
     def get_booked_seats(self, obj):
         return obj.get_booked_seats
-
 
 
 class JourneyRetrieveSerializer(JourneySerializer):
     class Meta:
         model = Journey
         fields = "__all__"
-
-

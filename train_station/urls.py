@@ -7,7 +7,8 @@ from train_station.views import (
     StationModelView,
     TicketModelView,
     TrainModelView,
-    TrainTypeModelView, JourneyModelView,
+    TrainTypeModelView,
+    JourneyModelView,
 )
 
 router = routers.DefaultRouter()

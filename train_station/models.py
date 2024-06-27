@@ -23,12 +23,8 @@ class TrainType(models.Model):
 class Ticket(models.Model):
     cargo = models.IntegerField()
     seat = models.IntegerField()
-    journey = ForeignKey("Journey",
-                         on_delete=models.CASCADE,
-                         related_name="tickets")
-    order = ForeignKey("Order",
-                       on_delete=models.CASCADE,
-                       related_name="tickets")
+    journey = ForeignKey("Journey", on_delete=models.CASCADE, related_name="tickets")
+    order = ForeignKey("Order", on_delete=models.CASCADE, related_name="tickets")
 
     def __str__(self):
         return f"Ticket: {self.order} - {self.cargo} - {self.seat}"
@@ -66,17 +62,12 @@ class Route(models.Model):
     distance = models.IntegerField()
 
     def __str__(self):
-        return (f" Train {self.id}:"
-                f"{self.source.name} - {self.destination.name}")
+        return f" Train {self.id}:" f"{self.source.name} - {self.destination.name}"
 
 
 class Journey(models.Model):
-    route = models.ForeignKey(Route,
-                              on_delete=models.CASCADE,
-                              related_name="journeys")
-    train = models.ForeignKey(Train,
-                              on_delete=models.CASCADE,
-                              related_name="journeys")
+    route = models.ForeignKey(Route, on_delete=models.CASCADE, related_name="journeys")
+    train = models.ForeignKey(Train, on_delete=models.CASCADE, related_name="journeys")
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
 
@@ -89,8 +80,8 @@ class Journey(models.Model):
 
 
 class Crew(models.Model):
-    first_name = models.CharField( max_length=150)
-    last_name = models.CharField( max_length=150)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
     position = models.CharField(max_length=150, blank=True)
     journey = models.ManyToManyField(Journey, blank=True, related_name="crews")
 

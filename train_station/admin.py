@@ -7,7 +7,8 @@ from train_station.models import (
     Station,
     Ticket,
     Train,
-    TrainType, Crew,
+    TrainType,
+    Crew,
 )
 
 admin.site.register(Station)
