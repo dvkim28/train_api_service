@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import ForeignKey
+from rest_framework.exceptions import ValidationError
 
 
 class Train(models.Model):
@@ -23,14 +24,37 @@ class TrainType(models.Model):
 class Ticket(models.Model):
     cargo = models.IntegerField()
     seat = models.IntegerField()
-    journey = ForeignKey("Journey", on_delete=models.CASCADE, related_name="tickets")
-    order = ForeignKey("Order", on_delete=models.CASCADE, related_name="tickets")
+    journey = ForeignKey("Journey",
+                         on_delete=models.CASCADE,
+                         related_name="tickets")
+    order = ForeignKey("Order",
+                       on_delete=models.CASCADE,
+                       related_name="tickets")
 
     def __str__(self):
         return f"Ticket: {self.order} - {self.cargo} - {self.seat}"
 
+    def validate_seat(self):
+        max_seats = self.journey.train.places_in_cargo
+        if not (1 <= self.seat <= max_seats):
+            raise ValidationError(
+                {
+                    "seat": f"seat number must be in available range: (1, {max_seats})"
+                }
+            )
+
+    def clean(self):
+        super().clean()
+        self.validate_seat()
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+
+
     class Meta:
-        unique_together = ("cargo", "seat", "journey")
+        unique_together = ("cargo", "seat", "journey", "order")
 
 
 class Order(models.Model):
@@ -62,12 +86,24 @@ class Route(models.Model):
     distance = models.IntegerField()
 
     def __str__(self):
-        return f" Train {self.id}:" f"{self.source.name} - {self.destination.name}"
+        return f" Train {self.id}:"\
+               f"{self.source.name} - {self.destination.name}"
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["destination", "source"], name="station_route"
+            )
+        ]
 
 
 class Journey(models.Model):
-    route = models.ForeignKey(Route, on_delete=models.CASCADE, related_name="journeys")
-    train = models.ForeignKey(Train, on_delete=models.CASCADE, related_name="journeys")
+    route = models.ForeignKey(Route,
+                              on_delete=models.CASCADE,
+                              related_name="journeys")
+    train = models.ForeignKey(Train,
+                              on_delete=models.CASCADE,
+                              related_name="journeys")
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
 

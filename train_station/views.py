@@ -1,5 +1,6 @@
 from django.db.models import Count, F
-from rest_framework import viewsets, request
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 from train_station.models import (
     Journey,
@@ -22,7 +23,6 @@ from train_station.serializers import (
     TrainSerializer,
     TrainTypeSerializer,
     JourneyListSerializer,
-    JourneyRetrieveSerializer,
     OrderListSerializer,
 )
 
@@ -48,6 +48,7 @@ class TrainModelView(viewsets.ModelViewSet):
 class TicketModelView(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -85,6 +86,8 @@ class RouteModelView(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return RouteListSerializer
+        elif self.action == "create":
+            return RouteSerializer
         return RouteSerializer
 
     def get_queryset(self):
@@ -92,11 +95,12 @@ class RouteModelView(viewsets.ModelViewSet):
         source = self.request.query_params.get("source", None)
         destination = self.request.query_params.get("destination", None)
         if source:
-            queryset = queryset.filter(source__name__icontains=source)
+            queryset = queryset.filter(
+                source__name__icontains=source)
         if destination:
-            queryset = queryset.filter(destination__name__icontains=destination)
+            queryset = queryset.filter(
+                destination__name__icontains=destination)
         return queryset
-
 
 
 class JourneyModelView(viewsets.ModelViewSet):
