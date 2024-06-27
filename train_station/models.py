@@ -8,7 +8,10 @@ class Train(models.Model):
     name = models.CharField(max_length=255)
     cargo_num = models.IntegerField()
     places_in_cargo = models.IntegerField()
-    train_type = ForeignKey("TrainType", on_delete=models.CASCADE)
+    train_type = ForeignKey("TrainType",
+                            on_delete=models.CASCADE,
+                            blank=True,
+                            null=True)
 
     def __str__(self):
         return self.name
@@ -36,10 +39,13 @@ class Ticket(models.Model):
 
     def validate_seat(self):
         max_seats = self.journey.train.places_in_cargo
-        if not (1 <= self.seat <= max_seats):
+        if not (
+                1 <= self.seat <= max_seats
+        ):
             raise ValidationError(
                 {
-                    "seat": f"seat number must be in available range: (1, {max_seats})"
+                    "seat": f"seat number must be in available range:"
+                            f" (1, {max_seats})"
                 }
             )
 
@@ -50,8 +56,6 @@ class Ticket(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
-
-
 
     class Meta:
         unique_together = ("cargo", "seat", "journey", "order")
