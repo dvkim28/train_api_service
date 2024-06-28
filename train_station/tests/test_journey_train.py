@@ -1,23 +1,13 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Count, F
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.reverse import reverse
-from rest_framework.test import APITestCase, APIClient
+from rest_framework.test import APIClient, APITestCase
 
-from train_station.models import (
-    TrainType,
-    Ticket,
-    Order,
-    Train,
-    Station,
-    Journey,
-    Route
-)
-from train_station.serializers import (
-    JourneySerializer,
-    JourneyListSerializer
-)
-from users.models import User
+from train_station.models import (Journey, Order, Route, Station, Ticket,
+                                  Train, TrainType)
+from train_station.serializers import JourneyListSerializer, JourneySerializer
 
 JOURNEY_LIST = reverse("train_station:journey-list")
 TRAIN_TYPE_LIST = reverse("train_station:traintype-list")
@@ -146,7 +136,8 @@ class AuthorizedTestCase(APITestCase):
         self.user1 = (get_user_model().objects.create_user(
             username="user1",
             password="PASSWORD",
-            email="mail@test.com"
+            email="mail@test.com",
+            is_staff=True,
         ))
         self.client = APIClient()
         self.client.force_authenticate(user=self.user1)
@@ -173,20 +164,51 @@ class AuthorizedTestCase(APITestCase):
             arrival_time=timezone.now()
         )
 
-    # def test_journey_list(self):
-    #     jr = Journey.objects.all()
-    #     serializer = JourneyListSerializer(jr, many=True)
-    #     response = self.client.get(JOURNEY_LIST)
-    #
-    #     print("Response Data:", response.data)
-    #     print("Serialized Data:", serializer.data)
-    #
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(response.data, serializer.data)
+    def test_journey_list(self):
+        jr = Journey.objects.all().annotate(
+            holded=Count("tickets"),
+            tickets_available=F("train__places_in_cargo") - F("holded")
+        )
+        serializer = JourneyListSerializer(jr, many=True)
+        response = self.client.get(JOURNEY_LIST)
+
+        print("Response Data:", response.data)
+        print("Serialized Data:", serializer.data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serializer.data)
 
     def test_journey_detail(self):
-        sr_url = get_journey_detail(self.journey.pk)
+        sr_url = get_journey_detail(self.journey.id)
         serializer = JourneySerializer(self.journey)
-        print(sr_url)
         response = self.client.get(sr_url)
         self.assertEqual(response.data, serializer.data)
+
+    def test_journey_post(self):
+        data = {
+            "route": self.route1.id,
+            "train": self.train1.id,
+            "departure_time": timezone.now(),
+            "arrival_time": timezone.now()
+        }
+        response = self.client.post(JOURNEY_LIST, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_journey_delete(self):
+        url = get_journey_detail(self.journey.id)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_journey_update(self):
+        data = {
+            "route": self.route1.id,
+            "train": self.train1.id,
+            "departure_time": timezone.now(),
+            "arrival_time": timezone.now()
+        }
+        url = get_journey_detail(self.journey.id)
+        response = self.client.patch(url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.journey.refresh_from_db()
+        serializer = JourneySerializer(self.journey)
+        self.assertEqual(serializer.data, response.data)

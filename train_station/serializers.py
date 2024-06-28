@@ -1,16 +1,8 @@
 from django.db import transaction
 from rest_framework import serializers
 
-from train_station.models import (
-    Journey,
-    Order,
-    Route,
-    Station,
-    Ticket,
-    Train,
-    TrainType,
-    Crew,
-)
+from train_station.models import (Crew, Journey, Order, Route, Station, Ticket,
+                                  Train, TrainType)
 
 
 class TrainTypeSerializer(serializers.ModelSerializer):

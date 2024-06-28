@@ -1,31 +1,17 @@
 from django.db.models import Count, F
-from rest_framework import viewsets, mixins
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from rest_framework import mixins, viewsets
 from rest_framework.permissions import IsAuthenticated
 
-
-from train_station.models import (
-    Journey,
-    Order,
-    Route,
-    Station,
-    Ticket,
-    Train,
-    TrainType,
-)
-from train_station.serializers import (
-    JourneySerializer,
-    OrderSerializer,
-    RouteListSerializer,
-    RouteSerializer,
-    StationSerializer,
-    TicketSerializer,
-    TrainListSerializer,
-    TrainRetrieveSerializer,
-    TrainSerializer,
-    TrainTypeSerializer,
-    JourneyListSerializer,
-    OrderListSerializer,
-)
+from train_station.models import (Journey, Order, Route, Station, Ticket,
+                                  Train, TrainType)
+from train_station.serializers import (JourneyListSerializer,
+                                       JourneySerializer, OrderListSerializer,
+                                       OrderSerializer, RouteListSerializer,
+                                       RouteSerializer, StationSerializer,
+                                       TicketSerializer, TrainListSerializer,
+                                       TrainRetrieveSerializer,
+                                       TrainSerializer, TrainTypeSerializer)
 
 
 class TrainTypeModelView(viewsets.ModelViewSet):
@@ -107,6 +93,37 @@ class RouteModelView(viewsets.ModelViewSet):
                 destination__name__icontains=destination)
         return queryset
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="source",
+                description="Find route by source station",
+                required=False,
+                type=str,
+                examples=[
+                    OpenApiExample(
+                        "Example 1",
+                        description='Find route with destination "Gare do Oriente"',
+                    )
+                ],
+            ),
+            OpenApiParameter(
+                name="destination",
+                description="Find route by destination station",
+                required=False,
+                type=str,
+                examples=[
+                    OpenApiExample(
+                        "Example 1",
+                        description='Find route with destination "Gare do Oriente"',
+                    )
+                ],
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class JourneyModelView(viewsets.ModelViewSet):
     queryset = Journey.objects.all()
@@ -116,14 +133,16 @@ class JourneyModelView(viewsets.ModelViewSet):
         if self.action == "list":
             return JourneyListSerializer
         elif self.action == "retrieve":
-            return JourneyListSerializer
+            return JourneySerializer
         return JourneySerializer
 
     def get_queryset(self):
         queryset = self.queryset
-        if self.action == "list":
+        if self.action in ("list"):
             queryset = queryset.annotate(
                 holded=Count("tickets"),
                 tickets_available=F("train__places_in_cargo") - F("holded"),
             )
+            return queryset
+        else:
             return queryset

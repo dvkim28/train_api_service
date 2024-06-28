@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.reverse import reverse
-from rest_framework.test import APITestCase, APIClient
+from rest_framework.test import APIClient, APITestCase
 
-from train_station.models import TrainType, Train, Station, Route
+from train_station.models import Route, Station, Train, TrainType
 from train_station.serializers import RouteListSerializer, RouteSerializer
 
 ROUTES_URL = reverse("train_station:route-list")

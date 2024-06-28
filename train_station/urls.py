@@ -1,15 +1,10 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from train_station.views import (
-    OrderModelView,
-    RouteModelView,
-    StationModelView,
-    TicketModelView,
-    TrainModelView,
-    TrainTypeModelView,
-    JourneyModelView,
-)
+from train_station.views import (JourneyModelView, OrderModelView,
+                                 RouteModelView, StationModelView,
+                                 TicketModelView, TrainModelView,
+                                 TrainTypeModelView)
 
 router = routers.DefaultRouter()
 router.register("traintype", TrainTypeModelView)

@@ -2,17 +2,10 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.reverse import reverse
-from rest_framework.test import APITestCase, APIClient
+from rest_framework.test import APIClient, APITestCase
 
-from train_station.models import (
-    Ticket,
-    Order,
-    Journey,
-    TrainType,
-    Train,
-    Station,
-    Route
-)
+from train_station.models import (Journey, Order, Route, Station, Ticket,
+                                  Train, TrainType)
 from train_station.serializers import TicketSerializer
 
 TICKET_LIST_URL = reverse("train_station:ticket-list")
