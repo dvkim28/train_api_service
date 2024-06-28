@@ -98,16 +98,42 @@ def sample_route(**params):
 class UnAuthorizedTestCase(APITestCase):
 
     def setUp(self):
+        self.user1 = get_user_model().objects.create_user(
+            username="user1",
+            password="PASSWORD",
+            email="mail@test.com",
+            is_staff=True,
+        )
         self.client = APIClient()
         self.client.force_authenticate(user=None)
+        self.user2 = get_user_model().objects.create_user(
+            username="user2", password="PASSWORD", email="mail2@test.com"
+        )
+        self.order1 = sample_order(user=self.user1)
+        self.order2 = sample_order(user=self.user2)
+        self.train1 = sample_train()
+        self.station1 = sample_station()
+        self.station2 = sample_station(
+            name="real station",
+        )
+        self.route1 = sample_route(
+            source=self.station1,
+            destination=self.station2,
+        )
+        self.journey = sample_journey(
+            route=self.route1,
+            train=self.train1,
+            departure_time=timezone.now(),
+            arrival_time=timezone.now(),
+        )
 
     def test_unauthorized_journey(self):
         response = self.client.get(JOURNEY_LIST)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_unauthorized_joureney_detail(self):
-        url = get_journey_detail(1)
-        response = self.client.get(url, 1)
+    def test_unauthorized_journey_detail(self):
+        url = get_journey_detail(self.journey.pk)
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_unauthorized_train(self):
@@ -115,8 +141,8 @@ class UnAuthorizedTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_unauthorized_train_detail(self):
-        url = get_train_detail(1)
-        response = self.client.get(url, 1)
+        url = get_train_detail(self.train1.pk)
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_unauthorized_train_type(self):
