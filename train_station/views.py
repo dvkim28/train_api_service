@@ -3,15 +3,29 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExampl
 from rest_framework import mixins, viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from train_station.models import (Journey, Order, Route, Station, Ticket,
-                                  Train, TrainType)
-from train_station.serializers import (JourneyListSerializer,
-                                       JourneySerializer, OrderListSerializer,
-                                       OrderSerializer, RouteListSerializer,
-                                       RouteSerializer, StationSerializer,
-                                       TicketSerializer, TrainListSerializer,
-                                       TrainRetrieveSerializer,
-                                       TrainSerializer, TrainTypeSerializer)
+from train_station.models import (
+    Journey,
+    Order,
+    Route,
+    Station,
+    Ticket,
+    Train,
+    TrainType,
+)
+from train_station.serializers import (
+    JourneyListSerializer,
+    JourneySerializer,
+    OrderListSerializer,
+    OrderSerializer,
+    RouteListSerializer,
+    RouteSerializer,
+    StationSerializer,
+    TicketSerializer,
+    TrainListSerializer,
+    TrainRetrieveSerializer,
+    TrainSerializer,
+    TrainTypeSerializer,
+)
 
 
 class TrainTypeModelView(viewsets.ModelViewSet):
@@ -32,11 +46,12 @@ class TrainModelView(viewsets.ModelViewSet):
             return TrainSerializer
 
 
-class TicketModelView(viewsets.GenericViewSet,
-                      mixins.CreateModelMixin,
-                      mixins.RetrieveModelMixin,
-                      mixins.ListModelMixin,
-                      ):
+class TicketModelView(
+    viewsets.GenericViewSet,
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
+):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
     permission_classes = (IsAuthenticated,)
@@ -86,11 +101,9 @@ class RouteModelView(viewsets.ModelViewSet):
         source = self.request.query_params.get("source", None)
         destination = self.request.query_params.get("destination", None)
         if source:
-            queryset = queryset.filter(
-                source__name__icontains=source)
+            queryset = queryset.filter(source__name__icontains=source)
         if destination:
-            queryset = queryset.filter(
-                destination__name__icontains=destination)
+            queryset = queryset.filter(destination__name__icontains=destination)
         return queryset
 
     @extend_schema(

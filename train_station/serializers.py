@@ -1,8 +1,16 @@
 from django.db import transaction
 from rest_framework import serializers
 
-from train_station.models import (Crew, Journey, Order, Route, Station, Ticket,
-                                  Train, TrainType)
+from train_station.models import (
+    Crew,
+    Journey,
+    Order,
+    Route,
+    Station,
+    Ticket,
+    Train,
+    TrainType,
+)
 
 
 class TrainTypeSerializer(serializers.ModelSerializer):
@@ -12,9 +20,7 @@ class TrainTypeSerializer(serializers.ModelSerializer):
 
 
 class TrainSerializer(serializers.ModelSerializer):
-    train_type = serializers.CharField(
-        source="train_type.name",
-        read_only=True)
+    train_type = serializers.CharField(source="train_type.name", read_only=True)
 
     class Meta:
         model = Train
@@ -22,9 +28,7 @@ class TrainSerializer(serializers.ModelSerializer):
 
 
 class TrainRetrieveSerializer(TrainSerializer):
-    train_type = serializers.CharField(
-        source="train_type.name",
-        read_only=True)
+    train_type = serializers.CharField(source="train_type.name", read_only=True)
 
     class Meta:
         model = Train
@@ -69,13 +73,8 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class OrderListSerializer(OrderSerializer):
-    tickets = TicketRetrieveSerializer(
-        many=True,
-        read_only=False,
-        allow_empty=False)
-    user = serializers.CharField(
-        source="user.email",
-        read_only=True)
+    tickets = TicketRetrieveSerializer(many=True, read_only=False, allow_empty=False)
+    user = serializers.CharField(source="user.email", read_only=True)
 
     class Meta:
         model = Order
@@ -107,10 +106,8 @@ class RouteSerializer(serializers.ModelSerializer):
 
 
 class RouteListSerializer(RouteSerializer):
-    source = serializers.CharField(
-        source="source.name", read_only=True)
-    destination = serializers.CharField(
-        source="destination.name", read_only=True)
+    source = serializers.CharField(source="source.name", read_only=True)
+    destination = serializers.CharField(source="destination.name", read_only=True)
 
     class Meta:
         model = Route
@@ -124,8 +121,7 @@ class JourneySerializer(serializers.ModelSerializer):
 
 
 class CrewSerializer(serializers.ModelSerializer):
-    crew_member = serializers.ReadOnlyField(
-        source="get_full_name_with_position")
+    crew_member = serializers.ReadOnlyField(source="get_full_name_with_position")
 
     class Meta:
         model = Crew
