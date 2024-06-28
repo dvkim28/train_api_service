@@ -19,7 +19,8 @@ TICKET_LIST_URL = reverse("train_station:ticket-list")
 
 
 def get_ticket_retrieve_url(ticket_id):
-    return reverse("train_station:ticket-detail", args=[ticket_id])
+    return reverse("train_station:ticket-detail",
+                   args=[ticket_id])
 
 
 def sample_ticket(**params):
@@ -79,7 +80,9 @@ def sample_station(**params):
 
 
 def sample_route(**params):
-    defaults = {"source": None, "destination": None, "distance": 10}
+    defaults = {"source": None,
+                "destination": None,
+                "distance": 10}
     defaults.update(params)
     return Route.objects.create(**defaults)
 
@@ -91,22 +94,28 @@ class UnAuthorizedTestCase(APITestCase):
 
     def test_unauthorized_ticket_list(self):
         response = self.client.get(TICKET_LIST_URL)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code,
+                         status.HTTP_401_UNAUTHORIZED)
 
     def test_unauthorized_ticket_detail(self):
         response = self.client.get(get_ticket_retrieve_url(1))
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code,
+                         status.HTTP_401_UNAUTHORIZED)
 
 
 class AuthorizedTestCase(APITestCase):
     def setUp(self):
         self.user1 = get_user_model().objects.create_user(
-            username="user1", password="PASSWORD", email="mail@test.com"
+            username="user1",
+            password="PASSWORD",
+            email="mail@test.com"
         )
         self.client = APIClient()
         (self.client.force_authenticate(user=self.user1))
         self.user2 = get_user_model().objects.create_user(
-            username="user", password="PASSWORD", email="mail2@test.com"
+            username="user",
+            password="PASSWORD",
+            email="mail2@test.com"
         )
         self.order1 = sample_order(user=self.user1)
         self.order2 = sample_order(user=self.user2)
@@ -127,17 +136,27 @@ class AuthorizedTestCase(APITestCase):
         )
 
     def test_ticket_list(self):
-        tk1 = sample_ticket(cargo=1, seat=1, journey=self.journey, order=self.order1)
-        tk2 = sample_ticket(cargo=2, seat=2, journey=self.journey, order=self.order2)
+        tk1 = sample_ticket(cargo=1,
+                            seat=1,
+                            journey=self.journey,
+                            order=self.order1)
+        tk2 = sample_ticket(cargo=2,
+                            seat=2,
+                            journey=self.journey,
+                            order=self.order2)
         serializer1 = TicketSerializer(tk1)
         serializer2 = TicketSerializer(tk2)
         response = self.client.get(TICKET_LIST_URL)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code,
+                         status.HTTP_200_OK)
         self.assertIn(serializer1.data, response.data)
         self.assertNotIn(serializer2.data, response.data)
 
     def test_ticket_detail(self):
-        tk1 = sample_ticket(cargo=1, seat=1, journey=self.journey, order=self.order1)
+        tk1 = sample_ticket(cargo=1,
+                            seat=1,
+                            journey=self.journey,
+                            order=self.order1)
         serializer = TicketSerializer(tk1)
         response = self.client.get(get_ticket_retrieve_url(tk1.id))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -151,7 +170,8 @@ class AuthorizedTestCase(APITestCase):
             "order": self.order1.id,
         }
         response = self.client.post(TICKET_LIST_URL, data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code,
+                         status.HTTP_201_CREATED)
 
     def test_ticket_update(self):
         updated = {
@@ -164,10 +184,12 @@ class AuthorizedTestCase(APITestCase):
             "order": self.order1.id,
         }
         response = self.client.post(TICKET_LIST_URL, data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code,
+                         status.HTTP_201_CREATED)
         url = get_ticket_retrieve_url(response.data["id"])
         response = self.client.put(url, updated)
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(response.status_code,
+                         status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_ticket_delete(self):
         tk = sample_ticket(
@@ -177,4 +199,5 @@ class AuthorizedTestCase(APITestCase):
             order=self.order1,
         )
         response = self.client.delete(get_ticket_retrieve_url(tk.id))
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(response.status_code,
+                         status.HTTP_405_METHOD_NOT_ALLOWED)

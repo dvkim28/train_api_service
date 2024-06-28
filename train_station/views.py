@@ -1,5 +1,9 @@
 from django.db.models import Count, F
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.utils import (
+    extend_schema,
+    OpenApiParameter,
+    OpenApiExample
+)
 from rest_framework import mixins, viewsets
 from rest_framework.permissions import IsAuthenticated
 
@@ -101,9 +105,13 @@ class RouteModelView(viewsets.ModelViewSet):
         source = self.request.query_params.get("source", None)
         destination = self.request.query_params.get("destination", None)
         if source:
-            queryset = queryset.filter(source__name__icontains=source)
+            queryset = queryset.filter(
+                source__name__icontains=source
+            )
         if destination:
-            queryset = queryset.filter(destination__name__icontains=destination)
+            queryset = queryset.filter(
+                destination__name__icontains=destination
+            )
         return queryset
 
     @extend_schema(
@@ -116,7 +124,8 @@ class RouteModelView(viewsets.ModelViewSet):
                 examples=[
                     OpenApiExample(
                         "Example 1",
-                        description='Find route with destination "Gare do Oriente"',
+                        description='Find route with '
+                                    'destination "Gare do Oriente"',
                     )
                 ],
             ),
@@ -128,7 +137,8 @@ class RouteModelView(viewsets.ModelViewSet):
                 examples=[
                     OpenApiExample(
                         "Example 1",
-                        description='Find route with destination "Gare do Oriente"',
+                        description='Find route with '
+                                    'destination "Gare do Oriente"',
                     )
                 ],
             ),

@@ -26,8 +26,12 @@ class TrainType(models.Model):
 class Ticket(models.Model):
     cargo = models.IntegerField()
     seat = models.IntegerField()
-    journey = ForeignKey("Journey", on_delete=models.CASCADE, related_name="tickets")
-    order = ForeignKey("Order", on_delete=models.CASCADE, related_name="tickets")
+    journey = ForeignKey("Journey",
+                         on_delete=models.CASCADE,
+                         related_name="tickets")
+    order = ForeignKey("Order",
+                       on_delete=models.CASCADE,
+                       related_name="tickets")
 
     def __str__(self):
         return f"Ticket: {self.order} - {self.cargo} - {self.seat}"
@@ -83,7 +87,8 @@ class Route(models.Model):
     distance = models.IntegerField()
 
     def __str__(self):
-        return f" Train {self.id}:" f"{self.source.name} - {self.destination.name}"
+        return (f"Train {self.id}: "
+                f"{self.source.name} - {self.destination.name}")
 
     class Meta:
         constraints = [
@@ -94,8 +99,12 @@ class Route(models.Model):
 
 
 class Journey(models.Model):
-    route = models.ForeignKey(Route, on_delete=models.CASCADE, related_name="journeys")
-    train = models.ForeignKey(Train, on_delete=models.CASCADE, related_name="journeys")
+    route = models.ForeignKey(Route,
+                              on_delete=models.CASCADE,
+                              related_name="journeys")
+    train = models.ForeignKey(Train,
+                              on_delete=models.CASCADE,
+                              related_name="journeys")
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
 

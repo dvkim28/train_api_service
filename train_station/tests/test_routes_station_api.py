@@ -142,9 +142,11 @@ class AuthorizedRoutesAPITestCase(APITestCase):
     def test_route_create(self):
         response = self.client.post(
             ROUTES_URL,
-            {"destination": self.station1, "source": self.station2, "distance": 10},
+            {"destination": self.station1,
+             "source": self.station2, "distance": 10},
         )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code,
+                         status.HTTP_403_FORBIDDEN)
 
     def test_route_update(self):
         route = Route.objects.create(
@@ -152,9 +154,11 @@ class AuthorizedRoutesAPITestCase(APITestCase):
             source=self.station2,
             distance=10,
         )
-        url = reverse("train_station:route-detail", args=[route.id])
+        url = reverse("train_station:route-detail",
+                      args=[route.id])
         response = self.client.put(url, {"distance": 100})
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code,
+                         status.HTTP_403_FORBIDDEN)
 
     def test_station_create(self):
         response = self.client.post(
