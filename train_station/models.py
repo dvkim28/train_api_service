@@ -1,7 +1,11 @@
+import os
+import uuid
+
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import ForeignKey
-from rest_framework.exceptions import ValidationError
+from django.utils.text import slugify
 
 
 class Train(models.Model):
@@ -116,11 +120,19 @@ class Journey(models.Model):
         return self.tickets.values_list("seat", flat=True).distinct().count()
 
 
+def get_image_path(instance, filename):
+    _, ext = os.path.splitext(filename)
+    return os.path.join(
+        "uploads/images/",
+        f"{slugify(instance.first_name)}-{(instance.last_name)}-{uuid.uuid4()}{ext}"
+    )
+
 class Crew(models.Model):
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
     position = models.CharField(max_length=150, blank=True)
     journey = models.ManyToManyField(Journey, blank=True, related_name="crews")
+    image = models.ImageField(null=True, upload_to=get_image_path)
 
     @property
     def get_full_name_with_position(self):
