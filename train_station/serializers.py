@@ -137,7 +137,7 @@ class CrewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Crew
-        fields = ["crew_member"]
+        fields = ["crew_member", "image"]
 
 
 class JourneyListSerializer(JourneySerializer):
