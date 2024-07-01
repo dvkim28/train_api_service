@@ -6,9 +6,10 @@ Installation from GitHub
 1. Install PostgreSQL and create a database.
 
 2. Clone the repository:
-`git clone https://github.com/dvkim28/train_api_service.git
-cd train_api_service
-`
+``git clone https://github.com/dvkim28/train_api_service.git``
+
+``cd train_api_service``
+
 3. Set up a virtual environment and activate it:
 
 ``python -m venv venv``
