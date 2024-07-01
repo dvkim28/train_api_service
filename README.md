@@ -10,8 +10,11 @@ Installation from GitHub
 cd train_api_service
 `
 3. Set up a virtual environment and activate it:
+
 ``python -m venv venv``
+
 ``source venv/bin/activate  # On Windows use `venv\Scripts\activate``
+
 4. Install dependencies:
 
 `pip install -r requirements.txt
