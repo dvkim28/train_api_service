@@ -6,6 +6,7 @@ Installation from GitHub
 1. Install PostgreSQL and create a database.
 
 2. Clone the repository:
+
 ``git clone https://github.com/dvkim28/train_api_service.git``
 
 ``cd train_api_service``
@@ -18,21 +19,25 @@ Installation from GitHub
 
 4. Install dependencies:
 
-`pip install -r requirements.txt
-`
+`pip install -r requirements.txt`
 
 5. Set environment variables:
 
-`export DB_HOST=<your_db_hostname>
-export DB_NAME=<your_db_name>
-export DB_USER=<your_db_username>
-export DB_PASSWORD=<your_db_password>
-export SECRET_KEY=<your_secret_key>`
+``export DB_HOST=<your_db_hostname>``
+
+``export DB_NAME=<your_db_name>``
+
+``export DB_USER=<your_db_username>``
+
+``export DB_PASSWORD=<your_db_password>``
+
+``export SECRET_KEY=<your_secret_key>``
 
 6. Apply migrations and run the server:
 
-`python manage.py migrate
-python manage.py runserver`
+``python manage.py migrate``
+
+``python manage.py runserver``
 
 Running with Docker
 Ensure Docker is installed on your system.
